@@ -19,7 +19,7 @@
 
 // dead keys are identified with a `*` prefix + the diacritic sign
 function isDeadKey(value) {
-  return value && value.length === 2 && value[0] === '*';
+    return value && value.length === 2 && value[0] === '*';
 }
 
 /**
@@ -29,62 +29,62 @@ function isDeadKey(value) {
 
 // return the list of all keys that can output the requested char
 function getKeyList(keyMap, char) {
-  const rv = [];
-  Object.entries(keyMap).forEach(([keyID, value]) => {
-    const level = value.indexOf(char);
-    if (level >= 0) {
-      rv.push({ id: keyID, level });
-    }
-  });
-  return rv.sort((a, b) => a.level > b.level);
+    const rv = [];
+    Object.entries(keyMap).forEach(([keyID, value]) => {
+        const level = value.indexOf(char);
+        if (level >= 0) {
+            rv.push({ id: keyID, level });
+        }
+    });
+    return rv.sort((a, b) => a.level > b.level);
 }
 
 // return a dictionary of all characters that can be done with a dead key
 function getDeadKeyDict(deadKeys) {
-  const dict = {};
-  Object.entries(deadKeys).forEach(([id, dkObj]) => {
-    Object.entries(dkObj).forEach(([base, alt]) => {
-      if (!(alt in dict)) {
-        dict[alt] = [];
-      }
-      dict[alt].push({ id, base });
+    const dict = {};
+    Object.entries(deadKeys).forEach(([id, dkObj]) => {
+        Object.entries(dkObj).forEach(([base, alt]) => {
+            if (!(alt in dict)) {
+                dict[alt] = [];
+            }
+            dict[alt].push({ id, base });
+        });
     });
-  });
-  return dict;
+    return dict;
 }
 
 // return a sequence of keys that can output the requested string
 function getKeySequence(keyMap, dkDict, str = '') {
-  const rv = [];
-  Array.from(str).forEach(char => {
-    const keys = getKeyList(keyMap, char);
-    if (keys.length) {
-      // direct access (possibly with Shift / AltGr)
-      rv.push(keys[0]);
-    } else if (char in dkDict) {
-      // available with a dead key
-      const dk = dkDict[char][0];
-      const dkId = getKeyList(keyMap, dk.id)[0];
-      if (dkId) {
-        rv.push(dkId);
-      } else {
-        // Fetch dead key in main dead key
-        rv.push(getKeyList(keyMap, '**')[0]);
-        rv.push(getKeyList(keyMap, dkDict[dk.id][0].base)[0]);
-      }
-      rv.push(getKeyList(keyMap, dk.base)[0]);
-    } else {
-      // not available
-      rv.push({});
-      // console.error('char not found:', char); // eslint-disable-line
-      // Logging this error is disabled for performance reasons. According to
-      // Firefox’s profiler, more than half of the time (~550ms) calculating and
-      // displaying stats is spent logging this error on english layouts with
-      // the french corpus. Unsupported characters are already handled by
-      // 'heatmap.js', so we are not loosing any features.
-    }
-  });
-  return rv;
+    const rv = [];
+    Array.from(str).forEach(char => {
+        const keys = getKeyList(keyMap, char);
+        if (keys.length) {
+            // direct access (possibly with Shift / AltGr)
+            rv.push(keys[0]);
+        } else if (char in dkDict) {
+            // available with a dead key
+            const dk = dkDict[char][0];
+            const dkId = getKeyList(keyMap, dk.id)[0];
+            if (dkId) {
+                rv.push(dkId);
+            } else {
+                // Fetch dead key in main dead key
+                rv.push(getKeyList(keyMap, '**')[0]);
+                rv.push(getKeyList(keyMap, dkDict[dk.id][0].base)[0]);
+            }
+            rv.push(getKeyList(keyMap, dk.base)[0]);
+        } else {
+            // not available
+            rv.push({});
+            // console.error('char not found:', char); // eslint-disable-line
+            // Logging this error is disabled for performance reasons. According to
+            // Firefox’s profiler, more than half of the time (~550ms) calculating and
+            // displaying stats is spent logging this error on english layouts with
+            // the french corpus. Unsupported characters are already handled by
+            // 'heatmap.js', so we are not loosing any features.
+        }
+    });
+    return rv;
 }
 
 /**
@@ -92,35 +92,35 @@ function getKeySequence(keyMap, dkDict, str = '') {
  */
 
 const MODIFIERS = {
-  ShiftLeft: false,
-  ShiftRight: false,
-  ControlLeft: false,
-  ControlRight: false,
-  AltLeft: false,
-  AltRight: false,
-  OSLeft: false,
-  OSRight: false,
+    ShiftLeft: false,
+    ShiftRight: false,
+    ControlLeft: false,
+    ControlRight: false,
+    AltLeft: false,
+    AltRight: false,
+    OSLeft: false,
+    OSRight: false,
 };
 
 function getShiftState(modifiers) {
-  return modifiers.ShiftRight || modifiers.ShiftLeft;
+    return modifiers.ShiftRight || modifiers.ShiftLeft;
 }
 
 function getAltGrState(modifiers, platform) {
-  if (platform === 'win') {
-    return modifiers.AltRight || (modifiers.ControlLeft && modifiers.AltLeft);
-  }
-  if (platform === 'mac') {
-    return modifiers.AltRight || modifiers.AltLeft;
-  }
-  return modifiers.AltRight;
+    if (platform === 'win') {
+        return modifiers.AltRight || (modifiers.ControlLeft && modifiers.AltLeft);
+    }
+    if (platform === 'mac') {
+        return modifiers.AltRight || modifiers.AltLeft;
+    }
+    return modifiers.AltRight;
 }
 
 function getModifierLevel(modifiers, platform) {
-  return (
-    (getShiftState(modifiers) ? 1 : 0) +
-    (getAltGrState(modifiers, platform) ? 2 : 0)
-  );
+    return (
+        (getShiftState(modifiers) ? 1 : 0) +
+        (getAltGrState(modifiers, platform) ? 2 : 0)
+    );
 }
 
 /**
@@ -128,76 +128,76 @@ function getModifierLevel(modifiers, platform) {
  */
 
 function newKeyboardLayout(keyMap = {}, deadKeys = {}, geometry = '') {
-  const modifiers = { ...MODIFIERS };
-  const deadKeyDict = getDeadKeyDict(deadKeys);
-  let pendingDK;
-  let platform = '';
+    const modifiers = { ...MODIFIERS };
+    const deadKeyDict = getDeadKeyDict(deadKeys);
+    let pendingDK;
+    let platform = '';
 
-  return {
-    get keyMap() {
-      return keyMap;
-    },
-    get deadKeys() {
-      return deadKeys;
-    },
-    get pendingDK() {
-      return pendingDK;
-    },
-    get geometry() {
-      return geometry;
-    },
-    get platform() {
-      return platform;
-    },
-    set platform(value) {
-      platform = value;
-    },
-
-    // modifier state
-    get modifiers() {
-      return {
-        get shift() {
-          return getShiftState(modifiers);
+    return {
+        get keyMap() {
+            return keyMap;
         },
-        get altgr() {
-          return getAltGrState(modifiers, platform);
+        get deadKeys() {
+            return deadKeys;
         },
-        get level() {
-          return getModifierLevel(modifiers, platform);
+        get pendingDK() {
+            return pendingDK;
         },
-      };
-    },
+        get geometry() {
+            return geometry;
+        },
+        get platform() {
+            return platform;
+        },
+        set platform(value) {
+            platform = value;
+        },
 
-    // keyboard hints
-    getKey: char => getKeyList(keyMap, char)[0],
-    getKeySequence: str => getKeySequence(keyMap, deadKeyDict, str),
+        // modifier state
+        get modifiers() {
+            return {
+                get shift() {
+                    return getShiftState(modifiers);
+                },
+                get altgr() {
+                    return getAltGrState(modifiers, platform);
+                },
+                get level() {
+                    return getModifierLevel(modifiers, platform);
+                },
+            };
+        },
 
-    // keyboard emulation
-    keyUp: keyCode => {
-      if (keyCode in modifiers) {
-        modifiers[keyCode] = false;
-      }
-    },
-    keyDown: keyCode => {
-      if (keyCode in modifiers) {
-        modifiers[keyCode] = true;
-      }
-      const key = keyMap[keyCode];
-      if (!key) {
-        return '';
-      }
-      let value = key[getModifierLevel(modifiers, platform)];
-      if (pendingDK) {
-        value = pendingDK[value] || '';
-        pendingDK = undefined;
-      }
-      if (isDeadKey(value)) {
-        pendingDK = deadKeys[value];
-        return '';
-      }
-      return value || '';
-    },
-  };
+        // keyboard hints
+        getKey: char => getKeyList(keyMap, char)[0],
+        getKeySequence: str => getKeySequence(keyMap, deadKeyDict, str),
+
+        // keyboard emulation
+        keyUp: keyCode => {
+            if (keyCode in modifiers) {
+                modifiers[keyCode] = false;
+            }
+        },
+        keyDown: keyCode => {
+            if (keyCode in modifiers) {
+                modifiers[keyCode] = true;
+            }
+            const key = keyMap[keyCode];
+            if (!key) {
+                return '';
+            }
+            let value = key[getModifierLevel(modifiers, platform)];
+            if (pendingDK) {
+                value = pendingDK[value] || '';
+                pendingDK = undefined;
+            }
+            if (isDeadKey(value)) {
+                pendingDK = deadKeys[value];
+                return '';
+            }
+            return value || '';
+        },
+    };
 }
 
 /**
@@ -222,31 +222,31 @@ const KEY_RADIUS = 5; // 5px border radius
  */
 
 const symbols = {
-  // diacritics, represented by a space + a combining character
-  '*`': ' \u0300', // grave
-  '*´': ' \u0301', // acute
-  '*^': ' \u0302', // circumflex
-  '*~': ' \u0303', // tilde
-  '*¯': ' \u0304', // macron
-  '*˘': ' \u0306', // breve
-  '*˙': ' \u0307', // dot above
-  '*¨': ' \u0308', // diaeresis
-  '*˚': ' \u030a', // ring above
-  '*”': ' \u030b', // double acute
-  '*ˇ': ' \u030c', // caron
-  '*‟': ' \u030f', // double grave
-  '*⁻': ' \u0311', // inverted breve
-  '*.': ' \u0323', // dot below
-  '*,': ' \u0326', // comma below
-  '*¸': ' \u0327', // cedilla
-  '*˛': ' \u0328', // ogonek
-  // special keys, represented by a smaller single character
-  // '*/': stroke   (no special glyph needed)
-  // '*µ': greek    (no special glyph needed)
-  // '*¤': currency (no special glyph needed)
-  '**': '\u2605', // 1dk = Kalamine "one dead key" = multi-purpose dead key
-  // other dead key identifiers (= two-char strings starting with a `*` sign)
-  // are not supported by Kalamine, but can still be used with <x-keyboard>
+    // diacritics, represented by a space + a combining character
+    '*`': ' \u0300', // grave
+    '*´': ' \u0301', // acute
+    '*^': ' \u0302', // circumflex
+    '*~': ' \u0303', // tilde
+    '*¯': ' \u0304', // macron
+    '*˘': ' \u0306', // breve
+    '*˙': ' \u0307', // dot above
+    '*¨': ' \u0308', // diaeresis
+    '*˚': ' \u030a', // ring above
+    '*”': ' \u030b', // double acute
+    '*ˇ': ' \u030c', // caron
+    '*‟': ' \u030f', // double grave
+    '*⁻': ' \u0311', // inverted breve
+    '*.': ' \u0323', // dot below
+    '*,': ' \u0326', // comma below
+    '*¸': ' \u0327', // cedilla
+    '*˛': ' \u0328', // ogonek
+    // special keys, represented by a smaller single character
+    // '*/': stroke   (no special glyph needed)
+    // '*µ': greek    (no special glyph needed)
+    // '*¤': currency (no special glyph needed)
+    '**': '\u2605', // 1dk = Kalamine "one dead key" = multi-purpose dead key
+    // other dead key identifiers (= two-char strings starting with a `*` sign)
+    // are not supported by Kalamine, but can still be used with <x-keyboard>
 };
 
 /**
@@ -254,51 +254,51 @@ const symbols = {
  */
 
 const arc = (xAxisRotation, x, y) =>
-  [
-    `a${KEY_RADIUS},${KEY_RADIUS}`,
-    xAxisRotation ? '1 0 0' : '0 0 1',
-    `${KEY_RADIUS * x},${KEY_RADIUS * y}`,
-  ].join(' ');
+    [
+        `a${KEY_RADIUS},${KEY_RADIUS}`,
+        xAxisRotation ? '1 0 0' : '0 0 1',
+        `${KEY_RADIUS * x},${KEY_RADIUS * y}`,
+    ].join(' ');
 
 const lineLength = (length, gap) => {
-  const offset = 2 * (KEY_PADDING + KEY_RADIUS) - 2 * gap * KEY_PADDING;
-  return KEY_WIDTH * length - Math.sign(length) * offset;
+    const offset = 2 * (KEY_PADDING + KEY_RADIUS) - 2 * gap * KEY_PADDING;
+    return KEY_WIDTH * length - Math.sign(length) * offset;
 };
 
 const h = (length, gap = 0, ccw = 0) => {
-  const l = lineLength(length, gap);
-  const sign = Math.sign(length);
-  return `h${l} ${ccw ? arc(1, sign, -sign) : arc(0, sign, sign)}`;
+    const l = lineLength(length, gap);
+    const sign = Math.sign(length);
+    return `h${l} ${ccw ? arc(1, sign, -sign) : arc(0, sign, sign)}`;
 };
 
 const v = (length, gap = 0, ccw = 0) => {
-  const l = lineLength(length, gap);
-  const sign = Math.sign(length);
-  return `v${l} ${ccw ? arc(1, sign, sign) : arc(0, -sign, sign)}`;
+    const l = lineLength(length, gap);
+    const sign = Math.sign(length);
+    return `v${l} ${ccw ? arc(1, sign, sign) : arc(0, -sign, sign)}`;
 };
 
 const M = `M${0.75 * KEY_WIDTH + KEY_RADIUS},-${KEY_WIDTH}`;
 
 const altEnterPath = [
-  M,
-  h(1.5),
-  v(2.0),
-  h(-2.25),
-  v(-1.0),
-  h(0.75, 1, 1),
-  v(-1.0, 1),
-  'z',
+    M,
+    h(1.5),
+    v(2.0),
+    h(-2.25),
+    v(-1.0),
+    h(0.75, 1, 1),
+    v(-1.0, 1),
+    'z',
 ].join(' ');
 
 const isoEnterPath = [
-  M,
-  h(1.5),
-  v(2.0),
-  h(-1.25),
-  v(-1.0, 1, 1),
-  h(-0.25, 1),
-  v(-1.0),
-  'z',
+    M,
+    h(1.5),
+    v(2.0),
+    h(-1.25),
+    v(-1.0, 1, 1),
+    h(-0.25, 1),
+    v(-1.0),
+    'z',
 ].join(' ');
 
 /**
@@ -306,115 +306,114 @@ const isoEnterPath = [
  */
 
 const sgml = (nodeName, attributes = {}, children = []) =>
-  `<${nodeName} ${Object.entries(attributes)
-    .map(([id, value]) => {
-      if (id === 'x' || id === 'y') {
-        return `${id}="${
-          KEY_WIDTH * Number(value) - (nodeName === 'text' ? KEY_PADDING : 0)
-        }"`;
-      }
-      if (id === 'width' || id === 'height') {
-        return `${id}="${KEY_WIDTH * Number(value) - 2 * KEY_PADDING}"`;
-      }
-      if (id === 'translateX') {
-        return `transform="translate(${KEY_WIDTH * Number(value)}, 0)"`;
-      }
-      return `${id}="${value}"`;
-    })
-    .join(' ')}>${children.join('\n')}</${nodeName}>`;
+    `<${nodeName} ${Object.entries(attributes)
+        .map(([id, value]) => {
+            if (id === 'x' || id === 'y') {
+                return `${id}="${KEY_WIDTH * Number(value) - (nodeName === 'text' ? KEY_PADDING : 0)
+                    }"`;
+            }
+            if (id === 'width' || id === 'height') {
+                return `${id}="${KEY_WIDTH * Number(value) - 2 * KEY_PADDING}"`;
+            }
+            if (id === 'translateX') {
+                return `transform="translate(${KEY_WIDTH * Number(value)}, 0)"`;
+            }
+            return `${id}="${value}"`;
+        })
+        .join(' ')}>${children.join('\n')}</${nodeName}>`;
 
 const path = (cname = '', d) => sgml('path', { class: cname, d });
 
 const rect = (cname = '', attributes) =>
-  sgml('rect', {
-    class: cname,
-    width: 1,
-    height: 1,
-    rx: KEY_RADIUS,
-    ry: KEY_RADIUS,
-    ...attributes,
-  });
+    sgml('rect', {
+        class: cname,
+        width: 1,
+        height: 1,
+        rx: KEY_RADIUS,
+        ry: KEY_RADIUS,
+        ...attributes,
+    });
 
 const text = (content, cname = '', attributes) =>
-  sgml(
-    'text',
-    {
-      class: cname,
-      width: 0.5,
-      height: 0.5,
-      x: 0.34,
-      y: 0.78,
-      ...attributes,
-    },
-    [content],
-  );
+    sgml(
+        'text',
+        {
+            class: cname,
+            width: 0.5,
+            height: 0.5,
+            x: 0.34,
+            y: 0.78,
+            ...attributes,
+        },
+        [content],
+    );
 
 const g = (className, children) => sgml('g', { class: className }, children);
 
 const emptyKey = [rect(), g('key')];
 
 const gKey = (className, finger, x, id, children = emptyKey) =>
-  sgml(
-    'g',
-    {
-      class: className,
-      finger,
-      id,
-      transform: `translate(${x * KEY_WIDTH}, 0)`,
-    },
-    children,
-  );
+    sgml(
+        'g',
+        {
+            class: className,
+            finger,
+            id,
+            transform: `translate(${x * KEY_WIDTH}, 0)`,
+        },
+        children,
+    );
 
 /**
  * Keyboard Layout Utils
  */
 
 const keyLevel = (level, label, position) => {
-  const attrs = { ...position };
-  const symbol = symbols[label] || '';
-  const content = symbol || (label || '').slice(-1);
-  let className = '';
-  if (level > 4) {
-    className = 'dk';
-  } else if (isDeadKey(label)) {
-    className = `deadKey ${symbol.startsWith(' ') ? 'diacritic' : ''}`;
-  }
-  return text(content, `level${level} ${className}`, attrs);
+    const attrs = { ...position };
+    const symbol = symbols[label] || '';
+    const content = symbol || (label || '').slice(-1);
+    let className = '';
+    if (level > 4) {
+        className = 'dk';
+    } else if (isDeadKey(label)) {
+        className = `deadKey ${symbol.startsWith(' ') ? 'diacritic' : ''}`;
+    }
+    return text(content, `level${level} ${className}`, attrs);
 };
 
 // In order not to overload the `alt` layers visually (AltGr & dead keys),
 // the `shift` key is displayed only if its lowercase is not `base`.
 const altUpperChar = (base, shift) =>
-  shift && base !== shift.toLowerCase() ? shift : '';
+    shift && base !== shift.toLowerCase() ? shift : '';
 
 function drawKey(element, keyMap) {
-  const keyChars = keyMap[element.parentNode.id];
-  if (!keyChars) {
-    element.innerHTML = '';
-    return;
-  }
-  /**
-   * What key label should we display when the `base` and `shift` layers have
-   * the lowercase and uppercase versions of the same letter?
-   * Most of the time we want the uppercase letter, but there are tricky cases:
-   *   - German:
-   *      'ß'.toUpperCase() == 'SS'
-   *      'ẞ'.toLowerCase() == 'ß'
-   *   - Greek:
-   *      'ς'.toUpperCase() == 'Σ'
-   *      'σ'.toUpperCase() == 'Σ'
-   *      'Σ'.toLowerCase() == 'σ'
-   *      'µ'.toUpperCase() == 'Μ' //        micro sign => capital letter MU
-   *      'μ'.toUpperCase() == 'Μ' //   small letter MU => capital letter MU
-   *      'Μ'.toLowerCase() == 'μ' // capital letter MU =>   small letter MU
-   * So if the lowercase version of the `shift` layer does not match the `base`
-   * layer, we'll show the lowercase letter (e.g. Greek 'ς').
-   */
-  const [l1, l2, l3, l4] = keyChars;
-  const base = l1.toUpperCase() !== l2 ? l1 : '';
-  const shift = base || l2.toLowerCase() === l1 ? l2 : l1;
-  const salt = altUpperChar(l3, l4);
-  element.innerHTML = `
+    const keyChars = keyMap[element.parentNode.id];
+    if (!keyChars) {
+        element.innerHTML = '';
+        return;
+    }
+    /**
+     * What key label should we display when the `base` and `shift` layers have
+     * the lowercase and uppercase versions of the same letter?
+     * Most of the time we want the uppercase letter, but there are tricky cases:
+     *   - German:
+     *      'ß'.toUpperCase() == 'SS'
+     *      'ẞ'.toLowerCase() == 'ß'
+     *   - Greek:
+     *      'ς'.toUpperCase() == 'Σ'
+     *      'σ'.toUpperCase() == 'Σ'
+     *      'Σ'.toLowerCase() == 'σ'
+     *      'µ'.toUpperCase() == 'Μ' //        micro sign => capital letter MU
+     *      'μ'.toUpperCase() == 'Μ' //   small letter MU => capital letter MU
+     *      'Μ'.toLowerCase() == 'μ' // capital letter MU =>   small letter MU
+     * So if the lowercase version of the `shift` layer does not match the `base`
+     * layer, we'll show the lowercase letter (e.g. Greek 'ς').
+     */
+    const [l1, l2, l3, l4] = keyChars;
+    const base = l1.toUpperCase() !== l2 ? l1 : '';
+    const shift = base || l2.toLowerCase() === l1 ? l2 : l1;
+    const salt = altUpperChar(l3, l4);
+    element.innerHTML = `
     ${keyLevel(1, base, { x: 0.28, y: 0.79 })}
     ${keyLevel(2, shift, { x: 0.28, y: 0.41 })}
     ${keyLevel(3, l3, { x: 0.7, y: 0.79 })}
@@ -425,24 +424,24 @@ function drawKey(element, keyMap) {
 }
 
 function drawDK(element, keyMap, deadKey) {
-  const drawChar = (element, content) => {
-    if (isDeadKey(content)) {
-      element.classList.add('deadKey', 'diacritic');
-      element.textContent = content[1];
-    } else {
-      element.classList.remove('deadKey', 'diacritic');
-      element.textContent = content || '';
-    }
-  };
+    const drawChar = (element, content) => {
+        if (isDeadKey(content)) {
+            element.classList.add('deadKey', 'diacritic');
+            element.textContent = content[1];
+        } else {
+            element.classList.remove('deadKey', 'diacritic');
+            element.textContent = content || '';
+        }
+    };
 
-  const keyChars = keyMap[element.parentNode.id];
-  if (!keyChars) return;
+    const keyChars = keyMap[element.parentNode.id];
+    if (!keyChars) return;
 
-  const alt0 = deadKey[keyChars[0]];
-  const alt1 = deadKey[keyChars[1]];
+    const alt0 = deadKey[keyChars[0]];
+    const alt1 = deadKey[keyChars[1]];
 
-  drawChar(element.querySelector('.level5'), alt0);
-  drawChar(element.querySelector('.level6'), altUpperChar(alt0, alt1));
+    drawChar(element.querySelector('.level5'), alt0);
+    drawChar(element.querySelector('.level6'), altUpperChar(alt0, alt1));
 }
 
 /**
@@ -452,228 +451,228 @@ function drawDK(element, keyMap, deadKey) {
  */
 
 const numberRow =
-  g('left', [
-    gKey('specialKey', 'l5', 0, 'Escape', [
-      rect('ergo', { width: 1.25 }),
-      text('⎋', 'ergo'),
-    ]),
-    gKey('pinkyKey', 'l5', 0, 'Backquote', [
-      rect('specialKey jis', { width: 1 }),
-      rect('ansi alt iso', { width: 1 }),
-      rect('ol60', { width: 1.25 }),
-      text('半角', 'jis', { x: 0.5, y: 0.4 }), // half-width (hankaku)
-      text('全角', 'jis', { x: 0.5, y: 0.6 }), // full-width (zenkaku)
-      text('漢字', 'jis', { x: 0.5, y: 0.8 }), // kanji
-      g('ansi key'),
-    ]),
-    gKey('numberKey', 'l5', 1, 'Digit1'),
-    gKey('numberKey', 'l4', 2, 'Digit2'),
-    gKey('numberKey', 'l3', 3, 'Digit3'),
-    gKey('numberKey', 'l2', 4, 'Digit4'),
-    gKey('numberKey', 'l2', 5, 'Digit5'),
-  ]) +
-  g('right', [
-    gKey('numberKey', 'r2', 6, 'Digit6'),
-    gKey('numberKey', 'r2', 7, 'Digit7'),
-    gKey('numberKey', 'r3', 8, 'Digit8'),
-    gKey('numberKey', 'r4', 9, 'Digit9'),
-    gKey('numberKey', 'r5', 10, 'Digit0'),
-    gKey('pinkyKey', 'r5', 11, 'Minus'),
-    gKey('pinkyKey', 'r5', 12, 'Equal', [
-      rect('ansi', { width: 1.0 }),
-      rect('ol60', { width: 1.25 }),
-      g('key'),
-    ]),
-    gKey('pinkyKey', 'r5', 13, 'IntlYen'),
-    gKey('specialKey', 'r5', 13, 'Backspace', [
-      rect('ansi', { width: 2 }),
-      rect('ol60', { width: 1.25, height: 2, y: -1 }),
-      rect('ol40 ol50', { width: 1.25 }),
-      rect('alt', { x: 1 }),
-      text('⌫', 'ansi'),
-      text('⌫', 'ergo'),
-      text('⌫', 'alt', { translateX: 1 }),
-    ]),
-  ]);
+    g('left', [
+        gKey('specialKey', 'l5', 0, 'Escape', [
+            rect('ergo', { width: 1.25 }),
+            text('⎋', 'ergo'),
+        ]),
+        gKey('pinkyKey', 'l5', 0, 'Backquote', [
+            rect('specialKey jis', { width: 1 }),
+            rect('ansi alt iso', { width: 1 }),
+            rect('ol60', { width: 1.25 }),
+            text('半角', 'jis', { x: 0.5, y: 0.4 }), // half-width (hankaku)
+            text('全角', 'jis', { x: 0.5, y: 0.6 }), // full-width (zenkaku)
+            text('漢字', 'jis', { x: 0.5, y: 0.8 }), // kanji
+            g('ansi key'),
+        ]),
+        gKey('numberKey', 'l5', 1, 'Digit1'),
+        gKey('numberKey', 'l4', 2, 'Digit2'),
+        gKey('numberKey', 'l3', 3, 'Digit3'),
+        gKey('numberKey', 'l2', 4, 'Digit4'),
+        gKey('numberKey', 'l2', 5, 'Digit5'),
+    ]) +
+    g('right', [
+        gKey('numberKey', 'r2', 6, 'Digit6'),
+        gKey('numberKey', 'r2', 7, 'Digit7'),
+        gKey('numberKey', 'r3', 8, 'Digit8'),
+        gKey('numberKey', 'r4', 9, 'Digit9'),
+        gKey('numberKey', 'r5', 10, 'Digit0'),
+        gKey('pinkyKey', 'r5', 11, 'Minus'),
+        gKey('pinkyKey', 'r5', 12, 'Equal', [
+            rect('ansi', { width: 1.0 }),
+            rect('ol60', { width: 1.25 }),
+            g('key'),
+        ]),
+        gKey('pinkyKey', 'r5', 13, 'IntlYen'),
+        gKey('specialKey', 'r5', 13, 'Backspace', [
+            rect('ansi', { width: 2 }),
+            rect('ol60', { width: 1.25, height: 2, y: -1 }),
+            rect('ol40 ol50', { width: 1.25 }),
+            rect('alt', { x: 1 }),
+            text('⌫', 'ansi'),
+            text('⌫', 'ergo'),
+            text('⌫', 'alt', { translateX: 1 }),
+        ]),
+    ]);
 
 const letterRow1 =
-  g('left', [
-    gKey('specialKey', 'l5', 0, 'Tab', [
-      rect('', { width: 1.5 }),
-      rect('ergo', { width: 1.25 }),
-      text('↹'),
-      text('↹', 'ergo'),
-    ]),
-    gKey('letterKey', 'l5', 1.5, 'KeyQ'),
-    gKey('letterKey', 'l4', 2.5, 'KeyW'),
-    gKey('letterKey', 'l3', 3.5, 'KeyE'),
-    gKey('letterKey', 'l2', 4.5, 'KeyR'),
-    gKey('letterKey', 'l2', 5.5, 'KeyT'),
-  ]) +
-  g('right', [
-    gKey('letterKey', 'r2', 6.5, 'KeyY'),
-    gKey('letterKey', 'r2', 7.5, 'KeyU'),
-    gKey('letterKey', 'r3', 8.5, 'KeyI'),
-    gKey('letterKey', 'r4', 9.5, 'KeyO'),
-    gKey('letterKey', 'r5', 10.5, 'KeyP'),
-    gKey('pinkyKey', 'r5', 11.5, 'BracketLeft'),
-    gKey('pinkyKey', 'r5', 12.5, 'BracketRight', [
-      rect('ansi', { width: 1.0 }),
-      rect('ol60', { width: 1.25 }),
-      g('key'),
-    ]),
-    gKey('pinkyKey', 'r5', 13.5, 'Backslash', [
-      rect('ansi', { width: 1.5 }),
-      rect('iso ol60'),
-      g('key'),
-    ]),
-  ]);
+    g('left', [
+        gKey('specialKey', 'l5', 0, 'Tab', [
+            rect('', { width: 1.5 }),
+            rect('ergo', { width: 1.25 }),
+            text('↹'),
+            text('↹', 'ergo'),
+        ]),
+        gKey('letterKey', 'l5', 1.5, 'KeyQ'),
+        gKey('letterKey', 'l4', 2.5, 'KeyW'),
+        gKey('letterKey', 'l3', 3.5, 'KeyE'),
+        gKey('letterKey', 'l2', 4.5, 'KeyR'),
+        gKey('letterKey', 'l2', 5.5, 'KeyT'),
+    ]) +
+    g('right', [
+        gKey('letterKey', 'r2', 6.5, 'KeyY'),
+        gKey('letterKey', 'r2', 7.5, 'KeyU'),
+        gKey('letterKey', 'r3', 8.5, 'KeyI'),
+        gKey('letterKey', 'r4', 9.5, 'KeyO'),
+        gKey('letterKey', 'r5', 10.5, 'KeyP'),
+        gKey('pinkyKey', 'r5', 11.5, 'BracketLeft'),
+        gKey('pinkyKey', 'r5', 12.5, 'BracketRight', [
+            rect('ansi', { width: 1.0 }),
+            rect('ol60', { width: 1.25 }),
+            g('key'),
+        ]),
+        gKey('pinkyKey', 'r5', 13.5, 'Backslash', [
+            rect('ansi', { width: 1.5 }),
+            rect('iso ol60'),
+            g('key'),
+        ]),
+    ]);
 
 const letterRow2 =
-  g('left', [
-    gKey('specialKey', 'l5', 0, 'CapsLock', [
-      rect('', { width: 1.75 }),
-      text('⇪', 'ansi'),
-      text('英数', 'jis', { x: 0.45 }), // alphanumeric (eisū)
-    ]),
-    gKey('letterKey homeKey', 'l5', 1.75, 'KeyA'),
-    gKey('letterKey homeKey', 'l4', 2.75, 'KeyS'),
-    gKey('letterKey homeKey', 'l3', 3.75, 'KeyD'),
-    gKey('letterKey homeKey', 'l2', 4.75, 'KeyF'),
-    gKey('letterKey', 'l2', 5.75, 'KeyG'),
-  ]) +
-  g('right', [
-    gKey('letterKey', 'r2', 6.75, 'KeyH'),
-    gKey('letterKey homeKey', 'r2', 7.75, 'KeyJ'),
-    gKey('letterKey homeKey', 'r3', 8.75, 'KeyK'),
-    gKey('letterKey homeKey', 'r4', 9.75, 'KeyL'),
-    gKey('letterKey homeKey', 'r5', 10.75, 'Semicolon'),
-    gKey('pinkyKey', 'r5', 11.75, 'Quote'),
-    gKey('specialKey', 'r5', 12.75, 'Enter', [
-      path('alt', altEnterPath),
-      path('iso', isoEnterPath),
-      rect('ansi', { width: 2.25 }),
-      rect('ol60', { width: 1.25, height: 2, y: -1 }),
-      rect('ol40 ol50', { width: 1.25 }),
-      text('⏎', 'ansi alt ergo'),
-      text('⏎', 'iso', { translateX: 1 }),
-    ]),
-  ]);
+    g('left', [
+        gKey('specialKey', 'l5', 0, 'CapsLock', [
+            rect('', { width: 1.75 }),
+            text('⇪', 'ansi'),
+            text('英数', 'jis', { x: 0.45 }), // alphanumeric (eisū)
+        ]),
+        gKey('letterKey homeKey', 'l5', 1.75, 'KeyA'),
+        gKey('letterKey homeKey', 'l4', 2.75, 'KeyS'),
+        gKey('letterKey homeKey', 'l3', 3.75, 'KeyD'),
+        gKey('letterKey homeKey', 'l2', 4.75, 'KeyF'),
+        gKey('letterKey', 'l2', 5.75, 'KeyG'),
+    ]) +
+    g('right', [
+        gKey('letterKey', 'r2', 6.75, 'KeyH'),
+        gKey('letterKey homeKey', 'r2', 7.75, 'KeyJ'),
+        gKey('letterKey homeKey', 'r3', 8.75, 'KeyK'),
+        gKey('letterKey homeKey', 'r4', 9.75, 'KeyL'),
+        gKey('letterKey homeKey', 'r5', 10.75, 'Semicolon'),
+        gKey('pinkyKey', 'r5', 11.75, 'Quote'),
+        gKey('specialKey', 'r5', 12.75, 'Enter', [
+            path('alt', altEnterPath),
+            path('iso', isoEnterPath),
+            rect('ansi', { width: 2.25 }),
+            rect('ol60', { width: 1.25, height: 2, y: -1 }),
+            rect('ol40 ol50', { width: 1.25 }),
+            text('⏎', 'ansi alt ergo'),
+            text('⏎', 'iso', { translateX: 1 }),
+        ]),
+    ]);
 
 const letterRow3 =
-  g('left', [
-    gKey('specialKey', 'l5', 0, 'ShiftLeft', [
-      rect('ansi alt', { width: 2.25 }),
-      rect('iso', { width: 1.25 }),
-      rect('ol50 ol60', { width: 1.25, height: 2, y: -1 }),
-      rect('ol40', { width: 1.25 }),
-      text('⇧'),
-      text('⇧', 'ergo'),
-    ]),
-    gKey('letterKey', 'l5', 1.25, 'IntlBackslash'),
-    gKey('letterKey', 'l5', 2.25, 'KeyZ'),
-    gKey('letterKey', 'l4', 3.25, 'KeyX'),
-    gKey('letterKey', 'l3', 4.25, 'KeyC'),
-    gKey('letterKey', 'l2', 5.25, 'KeyV'),
-    gKey('letterKey', 'l2', 6.25, 'KeyB'),
-  ]) +
-  g('right', [
-    gKey('letterKey', 'r2', 7.25, 'KeyN'),
-    gKey('letterKey', 'r2', 8.25, 'KeyM'),
-    gKey('letterKey', 'r3', 9.25, 'Comma'),
-    gKey('letterKey', 'r4', 10.25, 'Period'),
-    gKey('letterKey', 'r5', 11.25, 'Slash'),
-    gKey('pinkyKey', 'r5', 12.25, 'IntlRo'),
-    gKey('specialKey', 'r5', 12.25, 'ShiftRight', [
-      rect('ansi', { width: 2.75 }),
-      rect('abnt', { width: 1.75, x: 1 }),
-      rect('ol50 ol60', { width: 1.25, height: 2, y: -1 }),
-      rect('ol40', { width: 1.25 }),
-      text('⇧', 'ansi'),
-      text('⇧', 'ergo'),
-      text('⇧', 'abnt', { translateX: 1 }),
-    ]),
-  ]);
+    g('left', [
+        gKey('specialKey', 'l5', 0, 'ShiftLeft', [
+            rect('ansi alt', { width: 2.25 }),
+            rect('iso', { width: 1.25 }),
+            rect('ol50 ol60', { width: 1.25, height: 2, y: -1 }),
+            rect('ol40', { width: 1.25 }),
+            text('⇧'),
+            text('⇧', 'ergo'),
+        ]),
+        gKey('letterKey', 'l5', 1.25, 'IntlBackslash'),
+        gKey('letterKey', 'l5', 2.25, 'KeyZ'),
+        gKey('letterKey', 'l4', 3.25, 'KeyX'),
+        gKey('letterKey', 'l3', 4.25, 'KeyC'),
+        gKey('letterKey', 'l2', 5.25, 'KeyV'),
+        gKey('letterKey', 'l2', 6.25, 'KeyB'),
+    ]) +
+    g('right', [
+        gKey('letterKey', 'r2', 7.25, 'KeyN'),
+        gKey('letterKey', 'r2', 8.25, 'KeyM'),
+        gKey('letterKey', 'r3', 9.25, 'Comma'),
+        gKey('letterKey', 'r4', 10.25, 'Period'),
+        gKey('letterKey', 'r5', 11.25, 'Slash'),
+        gKey('pinkyKey', 'r5', 12.25, 'IntlRo'),
+        gKey('specialKey', 'r5', 12.25, 'ShiftRight', [
+            rect('ansi', { width: 2.75 }),
+            rect('abnt', { width: 1.75, x: 1 }),
+            rect('ol50 ol60', { width: 1.25, height: 2, y: -1 }),
+            rect('ol40', { width: 1.25 }),
+            text('⇧', 'ansi'),
+            text('⇧', 'ergo'),
+            text('⇧', 'abnt', { translateX: 1 }),
+        ]),
+    ]);
 
 const nonIcon = { x: 0.25, 'text-anchor': 'start' };
 const baseRow =
-  g('left', [
-    gKey('specialKey', 'l5', 0, 'ControlLeft', [
-      rect('', { width: 1.25 }),
-      rect('ergo', { width: 1.25 }),
-      text('Ctrl', 'win gnu', nonIcon),
-      text('⌃', 'mac'),
-    ]),
-    gKey('specialKey', 'l1', 1.25, 'MetaLeft', [
-      rect('', { width: 1.25 }),
-      rect('ergo', { width: 1.5 }),
-      text('Win', 'win', nonIcon),
-      text('Super', 'gnu', nonIcon),
-      text('⌘', 'mac'),
-    ]),
-    gKey('specialKey', 'l1', 2.5, 'AltLeft', [
-      rect('', { width: 1.25 }),
-      rect('ergo', { width: 1.5 }),
-      text('Alt', 'win gnu', nonIcon),
-      text('⌥', 'mac'),
-    ]),
-    gKey('specialKey', 'l1', 3.75, 'Lang2', [
-      rect(),
-      text('한자', '', { x: 0.4 }), // hanja
-    ]),
-    gKey('specialKey', 'l1', 3.75, 'NonConvert', [
-      rect(),
-      text('無変換', '', { x: 0.5 }), // muhenkan
-    ]),
-  ]) +
-  gKey('homeKey', 'm1', 3.75, 'Space', [
-    rect('ansi', { width: 6.25 }),
-    rect('ol60', { width: 5.5, x: -1 }),
-    rect('ol50 ol40', { width: 4.5 }),
-    rect('ks', { width: 4.25, x: 1 }),
-    rect('jis', { width: 3.25, x: 1 }),
-  ]) +
-  g('right', [
-    gKey('specialKey', 'r1', 8.0, 'Convert', [
-      rect(),
-      text('変換', '', { x: 0.5 }), // henkan
-    ]),
-    gKey('specialKey', 'r1', 9.0, 'KanaMode', [
-      rect(),
-      text('カタカナ', '', { x: 0.5, y: 0.4 }), // katakana
-      text('ひらがな', '', { x: 0.5, y: 0.6 }), // hiragana
-      text('ローマ字', '', { x: 0.5, y: 0.8 }), // romaji
-    ]),
-    gKey('specialKey', 'r1', 9.0, 'Lang1', [
-      rect(),
-      text('한/영', '', { x: 0.4 }), // han/yeong
-    ]),
-    gKey('specialKey', 'r1', 10.0, 'AltRight', [
-      rect('', { width: 1.25 }),
-      rect('ergo', { width: 1.5 }),
-      text('Alt', 'win gnu', nonIcon),
-      text('⌥', 'mac'),
-    ]),
-    gKey('specialKey', 'r1', 11.5, 'MetaRight', [
-      rect('', { width: 1.25 }),
-      rect('ergo', { width: 1.5 }),
-      text('Win', 'win', nonIcon),
-      text('Super', 'gnu', nonIcon),
-      text('⌘', 'mac'),
-    ]),
-    gKey('specialKey', 'r5', 12.5, 'ContextMenu', [
-      rect('', { width: 1.25 }),
-      rect('ergo'),
-      text('☰'),
-      text('☰', 'ol60'),
-    ]),
-    gKey('specialKey', 'r5', 13.75, 'ControlRight', [
-      rect('', { width: 1.25 }),
-      rect('ergo', { width: 1.25 }),
-      text('Ctrl', 'win gnu', nonIcon),
-      text('⌃', 'mac'),
-    ]),
-  ]);
+    g('left', [
+        gKey('specialKey', 'l5', 0, 'ControlLeft', [
+            rect('', { width: 1.25 }),
+            rect('ergo', { width: 1.25 }),
+            text('Ctrl', 'win gnu', nonIcon),
+            text('⌃', 'mac'),
+        ]),
+        gKey('specialKey', 'l1', 1.25, 'MetaLeft', [
+            rect('', { width: 1.25 }),
+            rect('ergo', { width: 1.5 }),
+            text('Win', 'win', nonIcon),
+            text('Super', 'gnu', nonIcon),
+            text('⌘', 'mac'),
+        ]),
+        gKey('specialKey', 'l1', 2.5, 'AltLeft', [
+            rect('', { width: 1.25 }),
+            rect('ergo', { width: 1.5 }),
+            text('Alt', 'win gnu', nonIcon),
+            text('⌥', 'mac'),
+        ]),
+        gKey('specialKey', 'l1', 3.75, 'Lang2', [
+            rect(),
+            text('한자', '', { x: 0.4 }), // hanja
+        ]),
+        gKey('specialKey', 'l1', 3.75, 'NonConvert', [
+            rect(),
+            text('無変換', '', { x: 0.5 }), // muhenkan
+        ]),
+    ]) +
+    gKey('homeKey', 'm1', 3.75, 'Space', [
+        rect('ansi', { width: 6.25 }),
+        rect('ol60', { width: 5.5, x: -1 }),
+        rect('ol50 ol40', { width: 4.5 }),
+        rect('ks', { width: 4.25, x: 1 }),
+        rect('jis', { width: 3.25, x: 1 }),
+    ]) +
+    g('right', [
+        gKey('specialKey', 'r1', 8.0, 'Convert', [
+            rect(),
+            text('変換', '', { x: 0.5 }), // henkan
+        ]),
+        gKey('specialKey', 'r1', 9.0, 'KanaMode', [
+            rect(),
+            text('カタカナ', '', { x: 0.5, y: 0.4 }), // katakana
+            text('ひらがな', '', { x: 0.5, y: 0.6 }), // hiragana
+            text('ローマ字', '', { x: 0.5, y: 0.8 }), // romaji
+        ]),
+        gKey('specialKey', 'r1', 9.0, 'Lang1', [
+            rect(),
+            text('한/영', '', { x: 0.4 }), // han/yeong
+        ]),
+        gKey('specialKey', 'r1', 10.0, 'AltRight', [
+            rect('', { width: 1.25 }),
+            rect('ergo', { width: 1.5 }),
+            text('Alt', 'win gnu', nonIcon),
+            text('⌥', 'mac'),
+        ]),
+        gKey('specialKey', 'r1', 11.5, 'MetaRight', [
+            rect('', { width: 1.25 }),
+            rect('ergo', { width: 1.5 }),
+            text('Win', 'win', nonIcon),
+            text('Super', 'gnu', nonIcon),
+            text('⌘', 'mac'),
+        ]),
+        gKey('specialKey', 'r5', 12.5, 'ContextMenu', [
+            rect('', { width: 1.25 }),
+            rect('ergo'),
+            text('☰'),
+            text('☰', 'ol60'),
+        ]),
+        gKey('specialKey', 'r5', 13.75, 'ControlRight', [
+            rect('', { width: 1.25 }),
+            rect('ergo', { width: 1.25 }),
+            text('Ctrl', 'win gnu', nonIcon),
+            text('⌃', 'mac'),
+        ]),
+    ]);
 
 const svgContent = `
   <svg viewBox="0 0 ${KEY_WIDTH * 15} ${KEY_WIDTH * 5}"
@@ -687,9 +686,9 @@ const svgContent = `
 `;
 
 const translate = (x = 0, y = 0, offset) => {
-  const dx = KEY_WIDTH * x + (offset ? KEY_PADDING : 0);
-  const dy = KEY_WIDTH * y + (offset ? KEY_PADDING : 0);
-  return `{ transform: translate(${dx}px, ${dy}px); }`;
+    const dx = KEY_WIDTH * x + (offset ? KEY_PADDING : 0);
+    const dy = KEY_WIDTH * y + (offset ? KEY_PADDING : 0);
+    return `{ transform: translate(${dx}px, ${dy}px); }`;
 };
 
 const main = `
@@ -918,7 +917,7 @@ const themes = `
   }
 
   [theme="reach"] .pinkyKey  rect { fill: hsl(  0, 100%, 90%); }
-  [theme="reach"] .numberKey rect { fill: hsl( 42, 100%, 90%); }
+  [theme="reach"] .numberKey rect { fill: hsl( 83, 100%, 90%); }
   [theme="reach"] .letterKey rect { fill: hsl(122, 100%, 90%); }
   [theme="reach"] .homeKey   rect { fill: hsl(122, 100%, 75%); }
   [theme="reach"] .press     rect { fill: #aaf; }
@@ -1017,307 +1016,307 @@ const style = `
  */
 
 const setFingerAssignment = (root, ansiStyle) => {
-  (ansiStyle
-    ? ['l5', 'l4', 'l3', 'l2', 'l2', 'r2', 'r2', 'r3', 'r4', 'r5']
-    : ['l5', 'l5', 'l4', 'l3', 'l2', 'l2', 'r2', 'r2', 'r3', 'r4']
-  ).forEach((attr, i) => {
-    root.getElementById(`Digit${(i + 1) % 10}`).setAttribute('finger', attr);
-  });
+    (ansiStyle
+        ? ['l5', 'l4', 'l3', 'l2', 'l2', 'r2', 'r2', 'r3', 'r4', 'r5']
+        : ['l5', 'l5', 'l4', 'l3', 'l2', 'l2', 'r2', 'r2', 'r3', 'r4']
+    ).forEach((attr, i) => {
+        root.getElementById(`Digit${(i + 1) % 10}`).setAttribute('finger', attr);
+    });
 };
 
 const getKeyChord = (root, key) => {
-  if (!key || !key.id) {
-    return [];
-  }
-  const element = root.getElementById(key.id);
-  const chord = [element];
-  if (key.level > 1) {
-    // altgr
-    chord.push(root.getElementById('AltRight'));
-  }
-  if (key.level % 2) {
-    // shift
-    chord.push(
-      root.getElementById(
-        element.getAttribute('finger')[0] === 'l' ? 'ShiftRight' : 'ShiftLeft',
-      ),
-    );
-  }
-  return chord;
+    if (!key || !key.id) {
+        return [];
+    }
+    const element = root.getElementById(key.id);
+    const chord = [element];
+    if (key.level > 1) {
+        // altgr
+        chord.push(root.getElementById('AltRight'));
+    }
+    if (key.level % 2) {
+        // shift
+        chord.push(
+            root.getElementById(
+                element.getAttribute('finger')[0] === 'l' ? 'ShiftRight' : 'ShiftLeft',
+            ),
+        );
+    }
+    return chord;
 };
 
 const guessPlatform = () => {
-  const p = navigator.platform.toLowerCase();
-  if (p.startsWith('win')) {
-    return 'win';
-  }
-  if (p.startsWith('mac')) {
-    return 'mac';
-  }
-  if (p.startsWith('linux')) {
-    return 'linux';
-  }
-  return '';
+    const p = navigator.platform.toLowerCase();
+    if (p.startsWith('win')) {
+        return 'win';
+    }
+    if (p.startsWith('mac')) {
+        return 'mac';
+    }
+    if (p.startsWith('linux')) {
+        return 'linux';
+    }
+    return '';
 };
 
 const template = document.createElement('template');
 template.innerHTML = `<style>${style}</style>${svgContent}`;
 
 class Keyboard extends HTMLElement {
-  constructor() {
-    super();
-    this.root = this.attachShadow({ mode: 'open' });
-    this.root.appendChild(template.content.cloneNode(true));
-    this._state = {
-      geometry: this.getAttribute('geometry') || '',
-      platform: this.getAttribute('platform') || '',
-      theme: this.getAttribute('theme') || '',
-      layout: newKeyboardLayout(),
-    };
-    this.geometry = this._state.geometry;
-    this.platform = this._state.platform;
-    this.theme = this._state.theme;
-  }
+    constructor() {
+        super();
+        this.root = this.attachShadow({ mode: 'open' });
+        this.root.appendChild(template.content.cloneNode(true));
+        this._state = {
+            geometry: this.getAttribute('geometry') || '',
+            platform: this.getAttribute('platform') || '',
+            theme: this.getAttribute('theme') || '',
+            layout: newKeyboardLayout(),
+        };
+        this.geometry = this._state.geometry;
+        this.platform = this._state.platform;
+        this.theme = this._state.theme;
+    }
 
-  /**
-   * User Interface: color theme, shape, layout.
-   */
-
-  get theme() {
-    return this._state.theme;
-  }
-
-  set theme(value) {
-    this._state.theme = value;
-    this.root.querySelector('svg').setAttribute('theme', value);
-  }
-
-  setCustomColors(keymap) { // XXX drop in favor of .keys?
-    Object.entries(keymap).forEach(([id, color]) => {
-      this.root
-        .getElementById(id)
-        .querySelectorAll('rect')
-        .forEach(rect => {
-          rect.style.fill = color;
-        });
-    });
-  }
-
-  setCustomOpacity(keymap) { // XXX drop in favor of .keys?
-    Object.entries(keymap).forEach(([id, opacity]) => {
-      this.root
-        .getElementById(id)
-        .querySelectorAll('rect')
-        .forEach(rect => {
-          rect.style.opacity = opacity;
-        });
-    });
-  }
-
-  get geometry() {
-    return this._state.geometry;
-  }
-
-  set geometry(value) {
     /**
-     * Supported geometries (besides ANSI):
-     * - Euro-style [Enter] key:
-     *     ISO  = ANSI + IntlBackslash
-     *     ABNT = ISO + IntlRo + NumpadComma
-     *     JIS  = ISO + IntlRo + IntlYen - IntlBackslash
-     *                + NonConvert + Convert + KanaMode
-     * - Russian-style [Enter] key:
-     *     ALT = ANSI - Backslash + IntlYen
-     *     KS = ALT + Lang1 + Lang2
-     * - Ortholinear:
-     *     OL60 = TypeMatrix 2030
-     *     OL50 = OLKB Preonic
-     *     OL40 = OLKB Planck
+     * User Interface: color theme, shape, layout.
      */
-    const supportedShapes = {
-      alt: 'alt intlYen',
-      ks: 'alt intlYen ks',
-      jis: 'iso intlYen intlRo jis',
-      abnt: 'iso intlBackslash intlRo',
-      iso: 'iso intlBackslash',
-      ansi: '',
-      ol60: 'ergo ol60',
-      ol50: 'ergo ol50',
-      ol40: 'ergo ol40',
-    };
-    if (value && !(value in supportedShapes)) {
-      return;
+
+    get theme() {
+        return this._state.theme;
     }
-    this._state.geometry = value;
-    const geometry = value || this.layout.geometry || 'ansi';
-    const shape = supportedShapes[geometry];
-    this.root.querySelector('svg').className.baseVal = shape;
-    setFingerAssignment(this.root, !shape.startsWith('iso'));
-  }
 
-  get platform() {
-    return this._state.platform;
-  }
-
-  set platform(value) {
-    const supportedPlatforms = {
-      win: 'win',
-      mac: 'mac',
-      linux: 'gnu',
-    };
-    this._state.platform = value in supportedPlatforms ? value : '';
-    const platform = this._state.platform || guessPlatform();
-    this.layout.platform = platform;
-    this.root
-      .querySelector('svg')
-      .setAttribute('platform', supportedPlatforms[platform]);
-  }
-
-  get layout() {
-    return this._state.layout;
-  }
-
-  set layout(value) {
-    this._state.layout = value;
-    this._state.layout.platform = this.platform;
-    this.geometry = this._state.geometry;
-    Array.from(this.root.querySelectorAll('.key')).forEach(key =>
-      drawKey(key, value.keyMap),
-    );
-  }
-
-  get fingerAssignments() {
-    const fingers = ['l5', 'l4', 'l3', 'l2', 'r2', 'r2', 'r3', 'r4', 'r5'];
-    const keys = {};
-    fingers.forEach(f => {
-      keys[f] = Array
-        .from(this.root.querySelectorAll(`[finger=${f}]`))
-        .map(element => element.id);
-    });
-    return keys;
-  }
-
-  setKeyboardLayout(keyMap, deadKeys, geometry) {
-    this.layout = newKeyboardLayout(keyMap, deadKeys, geometry);
-  }
-
-  get keys() { // XXX return IDs only and rely on setCustom{Colors,Opacity}?
-    return Array
-      .from(this.root.querySelectorAll('[id]'))
-      .filter(element => !element.id.startsWith('row_'));
-  }
-
-  /**
-   * KeyboardEvent helpers
-   */
-
-  keyDown(event) {
-    const code = event.code.replace(/^OS/, 'Meta'); // https://bugzil.la/1264150
-    if (!code) {
-      return '';
+    set theme(value) {
+        this._state.theme = value;
+        this.root.querySelector('svg').setAttribute('theme', value);
     }
-    const element = this.root.getElementById(code);
-    if (!element) {
-      return '';
-    }
-    element.classList.add('press');
-    const dk = this.layout.pendingDK;
-    const rv = this.layout.keyDown(code); // updates `this.layout.pendingDK`
-    const alt = this.layout.modifiers.altgr;
-    if (alt) {
-      this.root.querySelector('svg').classList.add('altgr');
-    }
-    if (dk) {
-      // a dead key has just been unlatched, hide all key hints
-      if (!element.classList.contains('specialKey')) {
-        this.root.querySelector('svg').classList.remove('dk');
-        Array.from(this.root.querySelectorAll('.dk')).forEach(span => {
-          span.textContent = '';
+
+    setCustomColors(keymap) { // XXX drop in favor of .keys?
+        Object.entries(keymap).forEach(([id, color]) => {
+            this.root
+                .getElementById(id)
+                .querySelectorAll('rect')
+                .forEach(rect => {
+                    rect.style.fill = color;
+                });
         });
-      }
     }
-    if (this.layout.pendingDK) {
-      // show hints for this dead key
-      Array.from(this.root.querySelectorAll('.key')).forEach(key => {
-        drawDK(key, this.layout.keyMap, this.layout.pendingDK);
-      });
-      this.root.querySelector('svg').classList.add('dk');
+
+    setCustomOpacity(keymap) { // XXX drop in favor of .keys?
+        Object.entries(keymap).forEach(([id, opacity]) => {
+            this.root
+                .getElementById(id)
+                .querySelectorAll('rect')
+                .forEach(rect => {
+                    rect.style.opacity = opacity;
+                });
+        });
     }
-    return !alt && (event.ctrlKey || event.altKey || event.metaKey) ? '' : rv; // don't steal ctrl/alt/meta shortcuts
-  }
 
-  keyUp(event) {
-    const code = event.code.replace(/^OS/, 'Meta'); // https://bugzil.la/1264150
-    if (!code) {
-      return;
+    get geometry() {
+        return this._state.geometry;
     }
-    const element = this.root.getElementById(code);
-    if (!element) {
-      return;
+
+    set geometry(value) {
+        /**
+         * Supported geometries (besides ANSI):
+         * - Euro-style [Enter] key:
+         *     ISO  = ANSI + IntlBackslash
+         *     ABNT = ISO + IntlRo + NumpadComma
+         *     JIS  = ISO + IntlRo + IntlYen - IntlBackslash
+         *                + NonConvert + Convert + KanaMode
+         * - Russian-style [Enter] key:
+         *     ALT = ANSI - Backslash + IntlYen
+         *     KS = ALT + Lang1 + Lang2
+         * - Ortholinear:
+         *     OL60 = TypeMatrix 2030
+         *     OL50 = OLKB Preonic
+         *     OL40 = OLKB Planck
+         */
+        const supportedShapes = {
+            alt: 'alt intlYen',
+            ks: 'alt intlYen ks',
+            jis: 'iso intlYen intlRo jis',
+            abnt: 'iso intlBackslash intlRo',
+            iso: 'iso intlBackslash',
+            ansi: '',
+            ol60: 'ergo ol60',
+            ol50: 'ergo ol50',
+            ol40: 'ergo ol40',
+        };
+        if (value && !(value in supportedShapes)) {
+            return;
+        }
+        this._state.geometry = value;
+        const geometry = value || this.layout.geometry || 'ansi';
+        const shape = supportedShapes[geometry];
+        this.root.querySelector('svg').className.baseVal = shape;
+        setFingerAssignment(this.root, !shape.startsWith('iso'));
     }
-    element.classList.remove('press');
-    this.layout.keyUp(code);
-    if (!this.layout.modifiers.altgr) {
-      this.root.querySelector('svg').classList.remove('altgr');
+
+    get platform() {
+        return this._state.platform;
     }
-  }
 
-  /**
-   * Keyboard hints
-   */
-
-  clearStyle() {
-    Array.from(this.root.querySelectorAll('[style]')).forEach(element =>
-      element.removeAttribute('style'),
-    );
-    Array.from(this.root.querySelectorAll('.press')).forEach(element =>
-      element.classList.remove('press'),
-    );
-  }
-
-  showKeys(chars, cssText) {
-    this.clearStyle();
-    this.layout.getKeySequence(chars).forEach(key => {
-      this.root.getElementById(key.id).style.cssText = cssText;
-    });
-  }
-
-  showHint(keyObj) {
-    let hintClass = '';
-    Array.from(this.root.querySelectorAll('.hint')).forEach(key =>
-      key.classList.remove('hint'),
-    );
-    getKeyChord(this.root, keyObj).forEach(key => {
-      key.classList.add('hint');
-      hintClass += `${key.getAttribute('finger')} `;
-    });
-    return hintClass;
-  }
-
-  pressKey(keyObj) {
-    this.clearStyle();
-    getKeyChord(this.root, keyObj).forEach(key => {
-      key.classList.add('press');
-    });
-  }
-
-  pressKeys(str, duration = 250) {
-    function* pressKeys(keys) {
-      for (const key of keys) {
-        // eslint-disable-line
-        yield key;
-      }
+    set platform(value) {
+        const supportedPlatforms = {
+            win: 'win',
+            mac: 'mac',
+            linux: 'gnu',
+        };
+        this._state.platform = value in supportedPlatforms ? value : '';
+        const platform = this._state.platform || guessPlatform();
+        this.layout.platform = platform;
+        this.root
+            .querySelector('svg')
+            .setAttribute('platform', supportedPlatforms[platform]);
     }
-    const it = pressKeys(this.layout.getKeySequence(str));
-    const send = setInterval(() => {
-      const { value, done } = it.next();
-      // this.showHint(value);
-      this.pressKey(value);
-      if (done) {
-        clearInterval(send);
-      }
-    }, duration);
-  }
+
+    get layout() {
+        return this._state.layout;
+    }
+
+    set layout(value) {
+        this._state.layout = value;
+        this._state.layout.platform = this.platform;
+        this.geometry = this._state.geometry;
+        Array.from(this.root.querySelectorAll('.key')).forEach(key =>
+            drawKey(key, value.keyMap),
+        );
+    }
+
+    get fingerAssignments() {
+        const fingers = ['l5', 'l4', 'l3', 'l2', 'r2', 'r2', 'r3', 'r4', 'r5'];
+        const keys = {};
+        fingers.forEach(f => {
+            keys[f] = Array
+                .from(this.root.querySelectorAll(`[finger=${f}]`))
+                .map(element => element.id);
+        });
+        return keys;
+    }
+
+    setKeyboardLayout(keyMap, deadKeys, geometry) {
+        this.layout = newKeyboardLayout(keyMap, deadKeys, geometry);
+    }
+
+    get keys() { // XXX return IDs only and rely on setCustom{Colors,Opacity}?
+        return Array
+            .from(this.root.querySelectorAll('[id]'))
+            .filter(element => !element.id.startsWith('row_'));
+    }
+
+    /**
+     * KeyboardEvent helpers
+     */
+
+    keyDown(event) {
+        const code = event.code.replace(/^OS/, 'Meta'); // https://bugzil.la/1264150
+        if (!code) {
+            return '';
+        }
+        const element = this.root.getElementById(code);
+        if (!element) {
+            return '';
+        }
+        element.classList.add('press');
+        const dk = this.layout.pendingDK;
+        const rv = this.layout.keyDown(code); // updates `this.layout.pendingDK`
+        const alt = this.layout.modifiers.altgr;
+        if (alt) {
+            this.root.querySelector('svg').classList.add('altgr');
+        }
+        if (dk) {
+            // a dead key has just been unlatched, hide all key hints
+            if (!element.classList.contains('specialKey')) {
+                this.root.querySelector('svg').classList.remove('dk');
+                Array.from(this.root.querySelectorAll('.dk')).forEach(span => {
+                    span.textContent = '';
+                });
+            }
+        }
+        if (this.layout.pendingDK) {
+            // show hints for this dead key
+            Array.from(this.root.querySelectorAll('.key')).forEach(key => {
+                drawDK(key, this.layout.keyMap, this.layout.pendingDK);
+            });
+            this.root.querySelector('svg').classList.add('dk');
+        }
+        return !alt && (event.ctrlKey || event.altKey || event.metaKey) ? '' : rv; // don't steal ctrl/alt/meta shortcuts
+    }
+
+    keyUp(event) {
+        const code = event.code.replace(/^OS/, 'Meta'); // https://bugzil.la/1264150
+        if (!code) {
+            return;
+        }
+        const element = this.root.getElementById(code);
+        if (!element) {
+            return;
+        }
+        element.classList.remove('press');
+        this.layout.keyUp(code);
+        if (!this.layout.modifiers.altgr) {
+            this.root.querySelector('svg').classList.remove('altgr');
+        }
+    }
+
+    /**
+     * Keyboard hints
+     */
+
+    clearStyle() {
+        Array.from(this.root.querySelectorAll('[style]')).forEach(element =>
+            element.removeAttribute('style'),
+        );
+        Array.from(this.root.querySelectorAll('.press')).forEach(element =>
+            element.classList.remove('press'),
+        );
+    }
+
+    showKeys(chars, cssText) {
+        this.clearStyle();
+        this.layout.getKeySequence(chars).forEach(key => {
+            this.root.getElementById(key.id).style.cssText = cssText;
+        });
+    }
+
+    showHint(keyObj) {
+        let hintClass = '';
+        Array.from(this.root.querySelectorAll('.hint')).forEach(key =>
+            key.classList.remove('hint'),
+        );
+        getKeyChord(this.root, keyObj).forEach(key => {
+            key.classList.add('hint');
+            hintClass += `${key.getAttribute('finger')} `;
+        });
+        return hintClass;
+    }
+
+    pressKey(keyObj) {
+        this.clearStyle();
+        getKeyChord(this.root, keyObj).forEach(key => {
+            key.classList.add('press');
+        });
+    }
+
+    pressKeys(str, duration = 250) {
+        function* pressKeys(keys) {
+            for (const key of keys) {
+                // eslint-disable-line
+                yield key;
+            }
+        }
+        const it = pressKeys(this.layout.getKeySequence(str));
+        const send = setInterval(() => {
+            const { value, done } = it.next();
+            // this.showHint(value);
+            this.pressKey(value);
+            if (done) {
+                clearInterval(send);
+            }
+        }, duration);
+    }
 }
 
 customElements.define('x-keyboard', Keyboard);

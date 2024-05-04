@@ -1,10 +1,13 @@
 # baseURL = "https://ergol.org"
-relativeURLs = false  # our 404 page does not support relative URLs
+relativeURLs = false # our 404 page does not support relative URLs
 languageCode = "fr"
 title = "Ergo‑L"
 
 [params]
-subtitle = "Ergonomie optimisée pour le français, l’anglais, le code."
+
+# subtitle = "Ergonomie optimisée pour le français, l’anglais, le code."
+subtitle = "Ergonomique avant tout"
+subsubtitle = 'Optimisé pour le français, l’anglais et le code.'
 description = "Une disposition de clavier ergonomique de type Colemak, optimisée pour le français, l’anglais et le code."
 
 [security.exec]
@@ -19,40 +22,39 @@ author = "authors"
 # category = "categories"
 
 [module]
-    [[module.mounts]]
-        source = "../code"
-        target = "assets/js"
-    [[module.mounts]]
-        source = "assets"
-        target = "assets"
-    [[module.mounts]]
-        source = "../corpus"
-        target = "static/corpus"
-    [[module.mounts]]
-        source = "../layouts"
-        target = "static/layouts"
-    [[module.mounts]]
-        source = "static"
-        target = "static"
+[[module.mounts]]
+source = "../code"
+target = "assets/js"
+[[module.mounts]]
+source = "assets"
+target = "assets"
+[[module.mounts]]
+source = "../corpus"
+target = "static/corpus"
+[[module.mounts]]
+source = "../layouts"
+target = "static/layouts"
+[[module.mounts]]
+source = "static"
+target = "static"
 
 [menus]
     [[menus.main]]
-        name    = "Ergo‑L"
+        name    = "Accueil"
         pageRef = "/"
         weight  = 1
     [[menus.main]]
         name    = "Présentation"
         pageRef = "/presentation"
-        parent  = "Ergo‑L"
-        weight  = 1
+        weight  = 2
     [[menus.main]]
         name    = "Installation"
         pageRef = "/installation"
-        parent  = "Ergo‑L"
+        weight  = 3
     [[menus.main]]
         name    = "Alternatives"
         pageRef = "/alternatives"
-        weight  = 2
+        weight  = 4
     [[menus.main]]
         name    = "Bépo ?"
         pageRef = "/alternatives/bepo"
@@ -71,7 +73,7 @@ author = "authors"
     [[menus.main]]
         name    = "Claviers"
         pageRef = "/claviers"
-        weight  = 3
+        weight  = 4
     [[menus.main]]
         name    = "Full-size"
         pageRef = "/claviers/full-size"
@@ -89,7 +91,7 @@ author = "authors"
     [[menus.main]]
         name    = "Analyseur"
         pageRef = "/stats"
-        weight  = 4
+        weight  = 5
     [[menus.main]]
         name    = "FAQ / Ressources"
         pageRef = "/ressources"
@@ -113,7 +115,7 @@ author = "authors"
 
 # Disable RSS everywhere, and enable it manually in /content/articles/_index.md
 [outputs]
-    home     = ["html"]
-    section  = ["html"]
-    taxonomy = ["html"]
-    term     = ["html"]
+home = ["html"]
+section = ["html"]
+taxonomy = ["html"]
+term = ["html"]

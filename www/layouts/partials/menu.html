@@ -11,11 +11,13 @@ Renders a menu for the given menu ID.
 {{- $menuID := .menuID }}
 
 {{- with index site.Menus $menuID }}
-  <nav>
+<nav>
+  <div class="inner-container">
     <ul>
       {{- partial "inline/menu/walk.html" (dict "page" $page "menuEntries" .) }}
     </ul>
-  </nav>
+  </div>
+</nav>
 {{- end }}
 
 {{- define "partials/inline/menu/walk.html" }}

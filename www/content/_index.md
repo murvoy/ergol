@@ -1,5 +1,5 @@
 +++
-title = "Ergonomique avant tout."
+title = ""
 
 [params]
 cssSheets = ["/css/keebs.css"]

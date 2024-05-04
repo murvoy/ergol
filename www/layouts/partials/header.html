@@ -1,4 +1,25 @@
-<div id="banner">
-  <p class="title"><a href="/">{{ site.Title }}</a></p>
-  <p>{{ .Site.Params.subtitle }}</p>
+{{- if .IsHome -}}
+<div id="homebanner">
+    <div class="inner-container">
+        <p>
+            {{ range split site.Title "" }}
+            <span class="keycap"><i>{{ . }}</i></span>
+            {{ end }}
+        </p>
+        <h3>Une disposition clavier</h3>
+        <p>
+            {{ range split .Site.Params.subtitle " " }}
+            <span class="keycap auto"><i>{{ . }}</i></span>
+            {{ end }}
+        </p>
+        <h3>{{ .Site.Params.subsubtitle }}</h3>
+    </div>
 </div>
+{{- else -}}
+<div id="banner">
+    <div class="inner-container">
+        <p class="title"><a href="/">{{ .Title }}</a></p>
+        <p>{{ .Site.Title }} / {{ .Site.Params.subtitle }}</p>
+    </div>
+</div>
+{{- end -}}

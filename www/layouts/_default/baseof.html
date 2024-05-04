@@ -20,10 +20,13 @@
   <header>
     {{ partial "header.html" . }}
   </header>
+  </div>
   {{ partial "menu.html" (dict "menuID" "main" "page" .) }}
   <main>
-    <h1>{{- block "title" . -}}{{ .Title }}{{- end -}}</h1>
-    {{ block "main" . }}{{ end }}
+    <div class="inner-container">
+      <h1>{{- block "title" . -}}{{ .Title }}{{- end -}}</h1>
+      {{ block "main" . }}{{ end }}
+    </div>
   </main>
   <footer>
     {{ partial "footer.html" . }}
