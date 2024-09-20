@@ -3,3 +3,4 @@ dist
 *.vim*
 *.custom
 www/public
+.vscode
