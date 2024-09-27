@@ -3,7 +3,14 @@
   <style>
     :root {
       color-scheme: light dark;
+      --color-palette-e: #F56960;
+      --color-palette-a-dark: #0E9595;
+      --color-palette-d-dark: #77372C;
+      /* special keys */
+      --fg-level3:        var(--color-palette-a-dark);
+      --fg-deadkey:       var(--color-palette-d-dark);
     }
+    
     rect, path {
       fill: #f8f8f8;
       fill: #fff;
@@ -27,13 +34,13 @@
     .left   { transform: translate(-15px, 0); }
     .right  { transform: translate(+15px, 0); }
 
-    #odk    { fill: #7e7; }
-    .level3 { fill: green; }
+    #odk    { fill: var(--color-palette-e); }
+    .level3 { fill: var(--fg-level3); }
 
     .layer, .level1, .level2 { opacity: 0.6; }
 
     .deadKey {
-      fill: red;
+      fill: var(--fg-deadkey);
       opacity: 0.8;
       font-size: 24px;
     }

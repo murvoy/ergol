@@ -3,6 +3,11 @@
   <style>
     :root {
       color-scheme: light dark;
+      --color-palette-a: #9CF6F6;
+      --color-palette-a-dark: #0E9595;
+      --color-palette-d-dark: #77372C;
+      --fg-deadkey: var(--color-palette-d-dark);
+      --fg-level3: var(--color-palette-a-dark);
     }
     rect, path {
       fill: #f8f8f8;
@@ -21,7 +26,7 @@
     .specialKey rect { fill: #e4e4e4; }
 
     .deadKey {
-      /* fill: red; */
+      /* fill: var(--fg-deadkey); */
       opacity: 0.5;
       font-size: 24px;
       font-weight: bolder;
@@ -34,9 +39,10 @@
     .left   { transform: translate(-15px, 0); }
     .right  { transform: translate(+15px, 0); }
 
-    #altgr  rect { fill: #99f; }
-    .level3      { fill: blue; }
-    .layer  { font-size: 14px; }
+    #altgr rect { fill: var(--color-palette-a); }
+    #altgr text      { fill: var(--color-palette-a-dark); }
+    .level3     { fill: var(--fg-level3); }
+    .layer      { font-size: 14px; }
 
     .layer, .level1, .level2 { opacity: 0.6; }
 
@@ -44,8 +50,8 @@
       .specialKey rect { fill: #333; }
       rect, path       { fill: #444; }
       text             { fill: #bbb; }
-      #altgr rect      { fill: #77d; }
-      #altgr text      { fill: navy; }
+      #altgr rect      { fill: var(--color-palette-a); }
+      #altgr text      { fill: var(--color-palette-a-dark); }
       .deadKey         { fill: #f44; }
       .level3          { fill: #99f; }
     }
