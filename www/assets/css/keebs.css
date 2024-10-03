@@ -31,7 +31,7 @@
 :root {
   --fg-normal-shadow: #8bb8;
   --fg-normal-border: #666;
-  --fg-normal:        #333;
+  --fg-normal:        #aaa;
   --bg-normal:        #fff;
   /* special keys */
   --fg-special:       #555;
@@ -80,6 +80,118 @@
   margin: 0;
   text-wrap: balance;
   text-align: center;
+  display: flex;
+  position: relative;
+}
+
+.keyboard form fieldset input {
+  border-radius: 0px;
+  border-top: 1px solid #6668;
+  border-bottom: 1px solid #6668;
+  box-sizing: border-box;
+  border: none;
+  z-index: 1;
+  color: var(--fg-normal);
+}
+
+.keyboard form fieldset::before{
+  content: '';
+  position: absolute;
+  left:0;
+  height: 100%;
+  border: 0.5px solid var(--fg-normal);
+  border-radius: 0.2em;
+  transition: .5s left ease;
+}
+
+.keyboard form fieldset:has(:nth-child(1)) input,
+.keyboard form fieldset:has(:nth-child(1))::before {
+  width: 100%;
+}
+.keyboard form fieldset:has(:nth-child(2)) input,
+.keyboard form fieldset:has(:nth-child(2))::before {
+  width: 50%;
+}
+.keyboard form fieldset:has(:nth-child(3)) input,
+.keyboard form fieldset:has(:nth-child(3))::before {
+  width: 33%;
+}
+.keyboard form fieldset:has(:nth-child(4)) input,
+.keyboard form fieldset:has(:nth-child(4))::before {
+  width: 25%;
+}
+.keyboard form fieldset:has(:nth-child(5)) input,
+.keyboard form fieldset:has(:nth-child(5))::before {
+  width: 20%;
+}
+.keyboard form fieldset:has(:nth-child(6)) input,
+.keyboard form fieldset:has(:nth-child(6))::before {
+  width: 16.67%;
+}
+
+.keyboard form fieldset:has(:nth-child(2)):has(:nth-child(1):checked)::before {
+  left: 0%;
+}
+.keyboard form fieldset:has(:nth-child(2)):has(:nth-child(2):checked)::before {
+  left: 50%;
+}
+
+.keyboard form fieldset:has(:nth-child(3)):has(:nth-child(1):checked)::before {
+  left: 0%;
+}
+.keyboard form fieldset:has(:nth-child(3)):has(:nth-child(2):checked)::before {
+  left: 33%;
+}
+.keyboard form fieldset:has(:nth-child(3)):has(:nth-child(3):checked)::before {
+  left: 66%;
+}
+
+.keyboard form fieldset:has(:nth-child(4)):has(:nth-child(1):checked)::before {
+  left: 0%;
+}
+.keyboard form fieldset:has(:nth-child(4)):has(:nth-child(2):checked)::before {
+  left: 25%;
+}
+.keyboard form fieldset:has(:nth-child(4)):has(:nth-child(3):checked)::before {
+  left: 50%;
+}
+.keyboard form fieldset:has(:nth-child(4)):has(:nth-child(4):checked)::before {
+  left: 75%;
+}
+
+.keyboard form fieldset:has(:nth-child(5)):has(:nth-child(1):checked)::before {
+  left: 0%;
+}
+.keyboard form fieldset:has(:nth-child(5)):has(:nth-child(2):checked)::before {
+  left: 20%;
+}
+.keyboard form fieldset:has(:nth-child(5)):has(:nth-child(3):checked)::before {
+  left: 40%;
+}
+.keyboard form fieldset:has(:nth-child(5)):has(:nth-child(4):checked)::before {
+  left: 60%;
+}
+.keyboard form fieldset:has(:nth-child(5)):has(:nth-child(5):checked)::before {
+  left: 80%;
+}
+
+.keyboard form fieldset:has(:nth-child(6)):has(:nth-child(1):checked)::before {
+  left: 0%;
+}
+.keyboard form fieldset:has(:nth-child(6)):has(:nth-child(2):checked)::before {
+  left: 16.6%;
+}
+.keyboard form fieldset:has(:nth-child(6)):has(:nth-child(3):checked)::before {
+  left: 33.3%;
+}
+.keyboard form fieldset:has(:nth-child(6)):has(:nth-child(4):checked)::before {
+  left: 50%;
+}
+.keyboard form fieldset:has(:nth-child(6)):has(:nth-child(5):checked)::before {
+  left: 66.6%;
+}
+.keyboard form fieldset:has(:nth-child(6)):has(:nth-child(6):checked)::before {
+  left: 83.3%;
 }
 
 .keyboard form input {
@@ -92,25 +204,22 @@
   outline: none;
   padding: 0 8px;
   margin: 2px 0;
-  background-color: var(--bg-special);
+  /* background-color: var(--bg-special); */
   color: var(--fg-special);
-  border: 1px solid #6668;
-  border-radius: 2px;
-  opacity: 0.6;
   transition: all 50ms linear;
   cursor: pointer;
 }
 
 .keyboard form input:hover {
-  background-color: var(--bg-accent);
+  /* background-color: var(--bg-accent); */
+  /* color: var(--bg-accent); */
   opacity: 1;
 }
 
 .keyboard form input:checked {
-  background-image: linear-gradient(180deg, var(--bg-letter), var(--bg-home));
-  background-color: var(--bg-normal);
-  text-shadow: 0 1px 0px var(--fg-normal-shadow);
-  color: var(--fg-normal);
+  /* background-image: linear-gradient(180deg, var(--bg-letter), var(--bg-home));
+  background-color: var(--bg-normal); */
+  font-weight: bold;
   opacity: 1;
 }
 
@@ -135,7 +244,7 @@
   display: none;
   text-align: center;
   text-wrap: balance;
-  margin: 1em auto;
+  margin: -0.5em auto 1.5em;
 }
 
 .keyboard nav a,
@@ -145,13 +254,15 @@
   margin: 2px 1px;
   padding: 0 6px;
   font-family: sans-serif;
-  font-size: 1em;
+  text-decoration: none;
+  font-size: 0.85em;
+  color: #6668;
+  background-color: transparent;
 }
 
 .keyboard nav button {
   font-weight: bold;
   cursor: pointer;
-  color: var(--fg-main);
 }
 
 .keyboard [disabled] {
@@ -168,16 +279,16 @@
   .keyboard nav a,
   .keyboard nav button {
     display: inline-block;
-    height: 2em;
-    line-height: 2em;
-    background-color: var(--bg-special);
-    border: 1px outset #6668;
+    height: 2.2em;
+    line-height: 3em;
+    border: 1px solid #6668;
     border-radius: 5px;
   }
   .keyboard nav a:hover,
   .keyboard nav button:hover {
-    background-color: var(--bg-accent);
-    text-decoration: underline;
+    text-decoration: none;
+    color: var(--fg-main);
+    border-color: var(--fg-main);
   }
 }
 
