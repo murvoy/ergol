@@ -101,9 +101,9 @@
       .specialKey rect { fill: #333; }
       rect, path       { fill: #444; }
       text             { fill: #bbb; }
-      .sym             { fill: #99f; }
+      .sym             { fill: var(--color-palette-a-light); }
       .mod             { fill: #eee; }
-      #sym .dualKey    { fill: #77d; }
+      #sym .dualKey    { fill: var(--color-palette-a-light); }
       #sym text.layer  { fill: navy; }
       #nav text.layer  { fill: brown; }
       #num text.layer  { fill: brown; }

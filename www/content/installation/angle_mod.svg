@@ -45,16 +45,6 @@
       text                 { fill: #aaa; }
       rect                 { fill: #444; }
       .layerSym            { fill: #99f; }
-      /* 'hints' theme */
-      .m1 rect { fill: hsl(  0, 25%, 30%); }
-      .l2 rect { fill: hsl( 31, 30%, 30%); }
-      .r2 rect { fill: hsl( 61, 30%, 30%); }
-      .l3 rect,
-      .r3 rect { fill: hsl(136, 30%, 30%); }
-      .l4 rect,
-      .r4 rect { fill: hsl(200, 30%, 30%); }
-      .l5 rect,
-      .r5 rect { fill: hsl(230, 30%, 30%); }
       .dimmed rect { fill: #4444; }
     }
   </style>

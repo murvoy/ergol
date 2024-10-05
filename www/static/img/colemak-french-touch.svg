@@ -52,15 +52,15 @@
       --fg-normal:        #bbb;
       --bg-normal:        #4d4d4d;
       /* special keys */
-      --fg-level3:        var(--color-palette-a-dark);
-      --fg-level5:        var(--color-palette-b-dark);
-      --fg-deadkey:       var(--color-palette-d-dark);
+      --fg-level3:        var(--color-palette-a-light);
+      --fg-level5:        var(--color-palette-b-light);
+      --fg-deadkey:       var(--color-palette-d-light);
       --fg-special:       #888;
       --bg-special:       #333;
       /* 'reach' theme */
-      --bg-number:        var(--color-palette-a-light);
-      --bg-letter:        var(--color-palette-b-light);
-      --bg-home:          var(--color-palette-d-light);
+      --bg-number:        var(--color-palette-a-dark);
+      --bg-letter:        var(--color-palette-b-dark);
+      --bg-home:          var(--color-palette-d-dark);
     }}
 
     rect, path {

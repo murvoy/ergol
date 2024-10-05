@@ -50,19 +50,19 @@
       --fg-normal:        #bbb;
       --bg-normal:        #444;
       /* special keys */
-      --fg-level3:        #99f;
-      --fg-level5:        #6d6;
-      --fg-deadkey:       #f44;
+      --fg-level3:        var(--color-palette-a-light);
+      --fg-level5:        var(--color-palette-b-light);
+      --fg-deadkey:       var(--color-palette-d-light);
       --fg-special:       #888;
       --bg-special:       #333;
       /* 'reach' theme */
-      --bg-number:        hsl( 60, 25%, 30%);
-      --bg-letter:        hsl(180, 30%, 30%);
-      --bg-home:          hsl(230, 30%, 30%);
+      --bg-number:        var(--color-palette-a-dark);
+      --bg-letter:        var(--color-palette-b-dark);
+      --bg-home:          var(--color-palette-d-dark);
     }}
 
     /* mild dark */
-    @media (prefers-color-scheme: dark) { :root {
+    /* @media (prefers-color-scheme: dark) { :root {
       --fg-normal-shadow: #8558;
       --fg-normal-border: #666;
       --fg-normal:        #bbb;
@@ -77,7 +77,7 @@
       --bg-number:        hsl( 80, 10%, 35%);
       --bg-letter:        hsl(220, 15%, 35%);
       --bg-home:          hsl(230, 30%, 30%);
-    }}
+    }} */
 
     rect, path {
       fill: var(--bg-normal);

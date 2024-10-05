@@ -94,8 +94,8 @@
       .specialKey rect { fill: #333; }
       rect, path       { fill: #444; }
       text             { fill: #bbb; }
-      .sym             { fill: #99f; }
-      #sym rect        { fill: #77d; }
+      .sym             { fill: var(--color-palette-a-light); }
+      #sym rect        { fill: var(--color-palette-a-light); }
       #sym text        { fill: navy; }
       #nav text        { fill: brown;}
     }

@@ -69,18 +69,8 @@
       rect                 { fill: #444; }
       .dualKey             { fill: #666; }
       .layerMod, .colorMod { fill: #eee; }
-      .layerSym, .colorSym { fill: var(--color-palette-a-dark); }
+      .layerSym, .colorSym { fill: var(--color-palette-a-light); }
       #row_AA .level2      { fill: #ccc; }
-      /* 'hints' theme */
-      [finger="m1"] rect { fill: var(--color-palette-a); }
-      [finger="l2"] rect { fill: var(--color-palette-b); }
-      [finger="r2"] rect { fill: var(--color-palette-c); }
-      [finger="l3"] rect,
-      [finger="r3"] rect { fill: var(--color-palette-d); }
-      [finger="l4"] rect,
-      [finger="r4"] rect { fill: var(--color-palette-e); }
-      [finger="l5"] rect,
-      [finger="r5"] rect { fill: var(--color-palette-e); }
     }
   </style>
 

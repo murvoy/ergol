@@ -50,14 +50,15 @@
   /* <html|body|main> background and text colors */
   --bg-root:          white;
   --bg-main:          white;
-  --bg-main-shadow:   #ccc;
-  --fg-main-border:   #eee;
+  --bg-main-shadow:   white;
+  --fg-main-border:   white;
   --fg-main:          #222;
+  --fg-disabled:      #999;
 
   /* banner -- the foreground matches the favicon #rocket color */
   --bg-banner:        white;
-  --fg-banner-border: #5446;
-  --fg-banner:        #544;
+  --fg-banner-border: #eee;
+  --fg-banner:        #222;
 
   /* <h2|a|code> and specific emphasis */
   --bg-accent:        var(--color-palette-d-light);
@@ -75,20 +76,27 @@
 @media (prefers-color-scheme: dark) {
   :root {
     /* <html|body|main> background and text colors */
-    --bg-root:          #151417;
-    --bg-main:          #1a1a1f;
-    --bg-main-shadow:   #111;
-    --fg-main-border:   #111;
-    --fg-main:          #ccc;
+    --bg-root:          #222;
+    --bg-main:          #222;
+    --bg-main-shadow:   #222;
+    --fg-main-border:   #222;
+    --fg-main:          #eee;
+    --fg-disabled:      #666;
 
-    /* banner -- the foreground matches the favicon #rocket color */
-    --bg-banner:        #29292d;
-    --fg-banner-border: #cbb5;
-    --fg-banner:        #cbb;
+    /* banner -- the foreground DOES NOT matches the favicon #rocket color */
+    --bg-banner:        #222;
+    --fg-banner-border: #444;
+    --fg-banner:        #eee;
 
     /* <h2|a|code> and specific emphasis */
-    --fg-accent-border: #f967;
-    --fg-accent:        #f96;
+    --bg-accent:        var(--color-palette-d-dark);
+
+    /* <kbd> and special inline content */
+    --key-bg:              #dfdfdf;
+    --key-bg-gradient:     #dcdcdc;
+    --key-border:          #959595;
+    --key-border-gradient: #d7d7d7;
+    --key-fg:              rgba(0, 0, 0, 0.85);
   }
 }
 

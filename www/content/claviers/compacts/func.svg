@@ -74,7 +74,7 @@
       text { fill: #888; }
       .hrm { fill: #666; }
       .mod { fill: #eee; }
-      .sym { fill: #99f; }
+      .sym { fill: var(--color-palette-a-light); }
       .nav { fill: #e83; }
     }
   </style>

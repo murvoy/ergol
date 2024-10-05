@@ -41,8 +41,8 @@
     @media (prefers-color-scheme: dark) {
       rect, path { fill: #444; }
       text       { fill: #bbb; }
-      .deadKey   { fill: #f44; }
-      .level3    { fill: #6b6; }
+      /* .deadKey   { fill: #f44; } */
+      .level3    { fill: var(--color-palette-a-light); }
     }
   </style>
 

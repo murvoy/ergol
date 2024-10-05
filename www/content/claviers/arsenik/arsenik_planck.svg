@@ -66,7 +66,7 @@
       rect                 { fill: #444; }
       .dualKey             { fill: #666; }
       .layerMod, .colorMod { fill: #eee; }
-      .layerSym, .colorSym { fill: var(--color-palette-a-dark); }
+      .layerSym, .colorSym { fill: var(--color-palette-a-light); }
       .layerNav, .colorNav { fill: var(--color-palette-c); }
       #row_AA .level2      { fill: #ccc; }
     }

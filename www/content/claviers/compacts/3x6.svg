@@ -24,9 +24,6 @@
       --fg-normal-border: #666;
       --bg-normal:        #4d4d4d;
       --bg-special:       #444;
-      --bg-number:        hsl(280, 10%, 34%);
-      --bg-letter:        hsl(220, 15%, 35%);
-      --bg-home:          hsl(225, 30%, 30%);
     }}
 
     rect, path {

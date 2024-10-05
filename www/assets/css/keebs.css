@@ -51,9 +51,9 @@
   --fg-special:       #888;
   --bg-special:       #333;
   /* 'reach' theme */
-  --bg-number:        hsl(280, 10%, 34%);
-  --bg-letter:        hsl(220, 15%, 35%);
-  --bg-home:          hsl(225, 30%, 30%);
+  --bg-number:        var(--color-palette-a-dark);
+  --bg-letter:        var(--color-palette-b-dark);
+  --bg-home:          var(--color-palette-d-dark);
 }}
 
 
@@ -256,7 +256,7 @@
   font-family: sans-serif;
   text-decoration: none;
   font-size: 0.85em;
-  color: #6668;
+  color: var(--fg-disabled);
   background-color: transparent;
 }
 
@@ -281,7 +281,7 @@
     display: inline-block;
     height: 2.2em;
     line-height: 3em;
-    border: 1px solid #6668;
+    border: 1px solid var(--fg-disabled);
     border-radius: 5px;
   }
   .keyboard nav a:hover,
